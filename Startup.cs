@@ -1,3 +1,6 @@
+using DataBaseFirst.Data;
+using DataBaseFirst.Interfaces;
+using DataBaseFirst.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -9,7 +12,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace DataBaseFirst
@@ -27,11 +32,18 @@ namespace DataBaseFirst
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DataBaseFirst", Version = "v1" });
+                // Adicionar confirgurações extras da documentação para ler o XML
+                var xmlArquivo = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlArquivo));
             });
+
+            // Injeção de dependência
+            services.AddTransient<DatabaseFirstDBContext, DatabaseFirstDBContext>();
+            services.AddTransient<IClienteRepository, ClienteRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 #nullable disable
 
@@ -16,6 +17,7 @@ namespace DataBaseFirst.Models
         public string Nome { get; set; }
         public string Cpf { get; set; }
 
+        [JsonIgnore(Condition =JsonIgnoreCondition.WhenWritingDefault)]
         public virtual ICollection<Pedido> Pedidos { get; set; }
     }
 }
